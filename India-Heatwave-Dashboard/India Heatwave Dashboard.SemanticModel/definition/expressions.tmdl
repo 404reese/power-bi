@@ -1,0 +1,114 @@
+expression DataFolder = "C:\Users\riddh\Documents\India-Heatwave-Dashboard\Data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: aaa0d931-a410-5e52-ba9a-5a5366ee26f1
+	queryGroup: Parameters
+
+	annotation PBI_ResultType = Text
+
+/// Cleans one IMD city CSV: standardises dates, handles dropouts and trace rain, removes outliers, fills short gaps.
+expression fnCleanCity =
+		(FileContent as binary, CityName as text) as table =>
+		let
+		    // ---------- 1. Import one IMD city file ----------
+		    Source = Csv.Document(
+		        FileContent,
+		        [Delimiter = ",", Columns = 4, Encoding = 65001, QuoteStyle = QuoteStyle.None]
+		    ),
+		    Promoted = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),
+		    RawCols = Table.RenameColumns(
+		        Promoted,
+		        {{"Date", "DateRaw"}, {"Rain", "RainRaw"}, {"Temp Max", "TmaxRaw"}, {"Temp Min", "TminRaw"}}
+		    ),
+		
+		    // ---------- 2. Standardise date formats ----------
+		    // Most rows are dd-MM-yyyy text; the last rows of some files are Excel serial numbers (e.g. 45463 = 19-06-2024)
+		    ParseDate = (t as nullable text) as nullable date =>
+		        let
+		            s = if t = null then "" else Text.Trim(t)
+		        in
+		            if s = "" then null
+		            else if Text.Contains(s, "-") then Date.FromText(s, [Format = "dd-MM-yyyy", Culture = "en-GB"])
+		            else Date.From(Number.FromText(s, "en-US")),
+		
+		    // ---------- 3. Handle sensor placeholders ----------
+		    // "---", "----", "-----" and blanks are AWS transmission dropouts -> null
+		    // "Tr" = trace rainfall (< 0.1 mm) -> 0
+		    ParseNum = (t as nullable text) as nullable number =>
+		        let
+		            s = if t = null then "" else Text.Trim(t)
+		        in
+		            if s = "" or Text.Remove(s, {"-"}) = "" then null
+		            else if s = "Tr" then 0
+		            else try Number.FromText(s, "en-US") otherwise null,
+		
+		    WithDate = Table.AddColumn(RawCols, "Date", each ParseDate([DateRaw]), type nullable date),
+		    ValidDates = Table.SelectRows(WithDate, each [Date] <> null),
+		    NoDupDates = Table.Distinct(ValidDates, {"Date"}),
+		    WithRain = Table.AddColumn(NoDupDates, "RainParsed", each ParseNum([RainRaw]), type nullable number),
+		    WithTrace = Table.AddColumn(WithRain, "RainTrace", each [RainRaw] <> null and Text.Trim([RainRaw]) = "Tr", type logical),
+		    WithTmax = Table.AddColumn(WithTrace, "TmaxParsed", each ParseNum([TmaxRaw]), type nullable number),
+		    WithTmin = Table.AddColumn(WithTmax, "TminParsed", each ParseNum([TminRaw]), type nullable number),
+		
+		    // ---------- 4. Remove outliers (sensor anomalies) ----------
+		    // Physically impossible values for these cities: Tmax outside 0-50 C, Tmin outside -5-40 C,
+		    // Tmin >= Tmax, or daily rain above 500 mm (e.g. 1014.5 mm logged in Kolkata on 01-12-2023)
+		    BadTmax = Table.AddColumn(WithTmin, "BadTmax",
+		        each [TmaxParsed] <> null and ([TmaxParsed] < 0 or [TmaxParsed] > 50), type logical),
+		    BadTmin = Table.AddColumn(BadTmax, "BadTmin",
+		        each [TminParsed] <> null and ([TminParsed] < -5 or [TminParsed] > 40
+		            or ([TmaxParsed] <> null and [TminParsed] >= [TmaxParsed])), type logical),
+		    BadRain = Table.AddColumn(BadTmin, "BadRain",
+		        each [RainParsed] <> null and [RainParsed] > 500, type logical),
+		    Outlier = Table.AddColumn(BadRain, "Outlier", each [BadTmax] or [BadTmin] or [BadRain], type logical),
+		    CleanTmax = Table.AddColumn(Outlier, "TmaxClean", each if [BadTmax] then null else [TmaxParsed], type nullable number),
+		    CleanTmin = Table.AddColumn(CleanTmax, "TminClean", each if [BadTmin] then null else [TminParsed], type nullable number),
+		    CleanRain = Table.AddColumn(CleanTmin, "Rainfall", each if [BadRain] then null else [RainParsed], type nullable number),
+		    Kept = Table.SelectColumns(CleanRain, {"Date", "Rainfall", "RainTrace", "TmaxClean", "TminClean", "Outlier"}),
+		
+		    // ---------- 5. Complete the calendar (missing days become explicit rows) ----------
+		    MinDate = List.Min(Kept[Date]),
+		    MaxDate = List.Max(Kept[Date]),
+		    AllDates = Table.FromList(
+		        List.Dates(MinDate, Duration.Days(MaxDate - MinDate) + 1, #duration(1, 0, 0, 0)),
+		        Splitter.SplitByNothing(),
+		        type table [Date = date]
+		    ),
+		    Joined = Table.NestedJoin(AllDates, {"Date"}, Kept, {"Date"}, "K", JoinKind.LeftOuter),
+		    Expanded = Table.ExpandTableColumn(Joined, "K", {"Rainfall", "RainTrace", "TmaxClean", "TminClean", "Outlier"}),
+		    Sorted = Table.Buffer(Table.Sort(Expanded, {{"Date", Order.Ascending}})),
+		
+		    // ---------- 6. Fill short dropouts (gap of 3 days or less) with the last valid reading ----------
+		    MaxGapDays = 3,
+		    LastTmaxDate = Table.AddColumn(Sorted, "LastTmaxDate", each if [TmaxClean] <> null then [Date] else null, type nullable date),
+		    LastTminDate = Table.AddColumn(LastTmaxDate, "LastTminDate", each if [TminClean] <> null then [Date] else null, type nullable date),
+		    CopyTmax = Table.DuplicateColumn(LastTminDate, "TmaxClean", "TmaxCarry"),
+		    CopyTmin = Table.DuplicateColumn(CopyTmax, "TminClean", "TminCarry"),
+		    FilledDown = Table.FillDown(CopyTmin, {"LastTmaxDate", "LastTminDate", "TmaxCarry", "TminCarry"}),
+		    FinalTmax = Table.AddColumn(FilledDown, "MaxTemperature",
+		        each if [TmaxClean] <> null then [TmaxClean]
+		            else if [LastTmaxDate] <> null and Duration.Days([Date] - [LastTmaxDate]) <= MaxGapDays then [TmaxCarry]
+		            else null, type nullable number),
+		    FinalTmin = Table.AddColumn(FinalTmax, "MinTemperature",
+		        each if [TminClean] <> null then [TminClean]
+		            else if [LastTminDate] <> null and Duration.Days([Date] - [LastTminDate]) <= MaxGapDays then [TminCarry]
+		            else null, type nullable number),
+		
+		    // ---------- 7. Data quality flag ----------
+		    Quality = Table.AddColumn(FinalTmin, "DataQuality",
+		        each if [Outlier] = true then "Outlier Removed"
+		            else if [MaxTemperature] = null then "Missing"
+		            else if [TmaxClean] = null or [TminClean] = null then "Imputed"
+		            else "Original", type text),
+		    WithCity = Table.AddColumn(Quality, "City", each CityName, type text),
+		    Result = Table.SelectColumns(WithCity,
+		        {"Date", "City", "MaxTemperature", "MinTemperature", "Rainfall", "RainTrace", "DataQuality"}),
+		    Typed = Table.TransformColumnTypes(Result, {
+		        {"Date", type date}, {"City", type text}, {"MaxTemperature", type number},
+		        {"MinTemperature", type number}, {"Rainfall", type number}, {"RainTrace", type logical},
+		        {"DataQuality", type text}})
+		in
+		    Typed
+	lineageTag: cd6862df-e6d2-59d2-9aab-493cb2bd7952
+	queryGroup: Functions
+
+	annotation PBI_ResultType = Function
+

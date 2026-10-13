@@ -1,0 +1,27 @@
+table 'Temp Increase'
+	lineageTag: 23d7f55d-ff55-5b8f-9aa3-d42b4e2fdf7c
+
+	/// Selected what-if temperature increase.
+	measure 'Temp Increase Value' = SELECTEDVALUE ( 'Temp Increase'[Temp Increase], 0 )
+		formatString: +0.0" °C"
+		lineageTag: 01e5db15-14d2-55de-976f-d96a7ca7e65a
+
+	column 'Temp Increase'
+		formatString: 0.0
+		lineageTag: 4b123834-7957-52fe-869f-3b77fa38790f
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Temp Increase' = calculated
+		mode: import
+		source = GENERATESERIES ( 0, 5, 0.5 )
+
+	annotation PBI_Id = ffc6294f15bc550fa5989aa9e95e2014
+

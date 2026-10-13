@@ -1,0 +1,177 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "station_alert_table",
+  "position": {
+    "x": 16,
+    "y": 76,
+    "z": 3000,
+    "height": 200,
+    "width": 720,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "City"
+                    }
+                  },
+                  "Property": "City"
+                }
+              },
+              "queryRef": "City.City",
+              "nativeQueryRef": "City"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "WeatherData"
+                    }
+                  },
+                  "Property": "Latest Reading Date"
+                }
+              },
+              "queryRef": "WeatherData.Latest Reading Date",
+              "nativeQueryRef": "Latest Reading Date"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "WeatherData"
+                    }
+                  },
+                  "Property": "Latest Max Temp"
+                }
+              },
+              "queryRef": "WeatherData.Latest Max Temp",
+              "nativeQueryRef": "Latest Max Temp"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "WeatherData"
+                    }
+                  },
+                  "Property": "Heat Index (Last 30 Days)"
+                }
+              },
+              "queryRef": "WeatherData.Heat Index (Last 30 Days)",
+              "nativeQueryRef": "Heat Index (Last 30 Days)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "WeatherData"
+                    }
+                  },
+                  "Property": "Active Alerts (Last 30 Days)"
+                }
+              },
+              "queryRef": "WeatherData.Active Alerts (Last 30 Days)",
+              "nativeQueryRef": "Active Alerts (Last 30 Days)"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "WeatherData"
+                    }
+                  },
+                  "Property": "Current Alert"
+                }
+              },
+              "queryRef": "WeatherData.Current Alert",
+              "nativeQueryRef": "Current Alert"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "WeatherData"
+                        }
+                      },
+                      "Property": "Alert Color"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "WeatherData.Current Alert"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "bold": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Station-wise alert status'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

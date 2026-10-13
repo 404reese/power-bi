@@ -1,0 +1,498 @@
+table WeatherData
+	lineageTag: ba3a5e32-a01e-5a10-9542-bd1d2a1a028f
+
+	/// Average daily maximum temperature.
+	measure 'Avg Max Temp' = AVERAGE ( 'WeatherData'[MaxTemperature] )
+		formatString: 0.0" °C"
+		displayFolder: 1. Temperature
+		lineageTag: 2fc896d4-d071-54da-aae9-0fdd651dc03f
+
+	/// Average daily minimum temperature.
+	measure 'Avg Min Temp' = AVERAGE ( 'WeatherData'[MinTemperature] )
+		formatString: 0.0" °C"
+		displayFolder: 1. Temperature
+		lineageTag: 50b69580-95d9-5df1-b2b7-85b0f31d70eb
+
+	/// Highest daily maximum temperature recorded.
+	measure 'Highest Max Temp' = MAX ( 'WeatherData'[MaxTemperature] )
+		formatString: 0.0" °C"
+		displayFolder: 1. Temperature
+		lineageTag: 433eec10-0a69-5474-bf09-7fe02193a455
+
+	/// Average gap between day maximum and night minimum.
+	measure 'Avg Diurnal Range' = AVERAGE ( 'WeatherData'[Diurnal Range] )
+		formatString: 0.0" °C"
+		displayFolder: 1. Temperature
+		lineageTag: 2dbf303c-6d5d-500a-9841-c9e4995db59a
+
+	/// Average max temperature of the latest complete year minus the year before it.
+	measure 'YoY Temp Change' =
+			VAR Yr = CALCULATE ( MAX ( 'Date'[Year] ), 'Date'[Complete Year] = "Yes" )
+			VAR CurrYearTemp = CALCULATE ( [Avg Max Temp], 'Date'[Year] = Yr )
+			VAR PrevYearTemp = CALCULATE ( [Avg Max Temp], 'Date'[Year] = Yr - 1 )
+			RETURN
+			    IF ( NOT ISBLANK ( CurrYearTemp ) && NOT ISBLANK ( PrevYearTemp ), CurrYearTemp - PrevYearTemp )
+		formatString: +0.00" °C";-0.00" °C";0.00" °C"
+		displayFolder: 1. Temperature
+		lineageTag: f48cf3b2-d490-52b4-8f75-93605c221970
+
+	/// Least-squares linear trend of yearly average max temperature.
+	measure 'Temp Trend (Linear)' =
+			VAR CurYear = SELECTEDVALUE ( 'Date'[Year] )
+			VAR Points =
+			    FILTER (
+			        ADDCOLUMNS (
+			            CALCULATETABLE ( VALUES ( 'Date'[Year] ), ALLSELECTED ( 'Date' ), 'Date'[Complete Year] = "Yes" ),
+			            "@Temp", [Avg Max Temp]
+			        ),
+			        NOT ISBLANK ( [@Temp] )
+			    )
+			VAR Fit = LINESTX ( Points, [@Temp], 'Date'[Year] )
+			RETURN
+			    IF (
+			        NOT ISBLANK ( CurYear ) && NOT ISBLANK ( [Avg Max Temp] ),
+			        MAXX ( Fit, [Intercept] + [Slope1] * CurYear )
+			    )
+		formatString: 0.00" °C"
+		displayFolder: 1. Temperature
+		lineageTag: aab4d092-a8a9-558e-8bac-2dfb1af1ed2c
+
+	/// Slope of the yearly trend, expressed per 10 years.
+	measure 'Warming Rate per Decade' =
+			VAR Points =
+			    FILTER (
+			        ADDCOLUMNS ( CALCULATETABLE ( VALUES ( 'Date'[Year] ), 'Date'[Complete Year] = "Yes" ), "@Temp", [Avg Max Temp] ),
+			        NOT ISBLANK ( [@Temp] )
+			    )
+			VAR Fit = LINESTX ( Points, [@Temp], 'Date'[Year] )
+			RETURN
+			    IF ( COUNTROWS ( Points ) >= 3, MAXX ( Fit, [Slope1] ) * 10 )
+		formatString: +0.00" °C/decade";-0.00" °C/decade"
+		displayFolder: 1. Temperature
+		lineageTag: ef129a64-3b48-5768-a855-d1f6ebda1094
+
+	/// Number of city-days.
+	measure 'Day Count' = COUNTROWS ( 'WeatherData' )
+		formatString: #,##0
+		displayFolder: 2. Heatwave
+		lineageTag: c37cd789-7041-50cb-920c-ec7417ccc957
+
+	/// City-days with a valid max temperature.
+	measure 'Days With Data' = CALCULATE ( COUNTROWS ( 'WeatherData' ), NOT ISBLANK ( 'WeatherData'[MaxTemperature] ) )
+		formatString: #,##0
+		displayFolder: 2. Heatwave
+		lineageTag: c5e42ea2-48d1-5c1e-96ae-ac087fb0cbf5
+
+	/// City-days meeting the IMD heatwave or severe heatwave criteria.
+	measure 'Heatwave Days' =
+			CALCULATE (
+			    COUNTROWS ( 'WeatherData' ),
+			    KEEPFILTERS ( 'WeatherData'[Heatwave Status] IN { "Heatwave", "Severe Heatwave" } )
+			) + 0
+		formatString: #,##0
+		displayFolder: 2. Heatwave
+		lineageTag: 63e29fd3-73b3-5594-a1f1-5741fdb00ea7
+
+	/// City-days meeting the IMD severe heatwave criteria.
+	measure 'Severe Heatwave Days' =
+			CALCULATE (
+			    COUNTROWS ( 'WeatherData' ),
+			    KEEPFILTERS ( 'WeatherData'[Heatwave Status] = "Severe Heatwave" )
+			) + 0
+		formatString: #,##0
+		displayFolder: 2. Heatwave
+		lineageTag: 30f16b4b-0f34-5c82-ad3a-0bbdab118523
+
+	/// Share of days with data that were severe heatwave days.
+	measure 'Severe Heatwave %' = DIVIDE ( [Severe Heatwave Days], [Days With Data] )
+		formatString: 0.00%
+		displayFolder: 2. Heatwave
+		lineageTag: 4a07379a-2b44-5018-b098-2ce5bf50f71e
+
+	/// Average heatwave days per year in the selection.
+	measure 'Heatwave Days per Year' = DIVIDE ( [Heatwave Days], COUNTROWS ( SUMMARIZE ( 'WeatherData', 'Date'[Year] ) ) )
+		formatString: 0.0
+		displayFolder: 2. Heatwave
+		lineageTag: 3cd77663-9049-544a-acfc-647ee20b0a96
+
+	/// 1-10 risk score from the peak temperature in the selection.
+	measure 'Risk Score' =
+			VAR PeakTemp = [Highest Max Temp]
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( PeakTemp ), BLANK (),
+			        PeakTemp >= 47, 10,
+			        PeakTemp >= 45, 8,
+			        PeakTemp >= 40, 6,
+			        PeakTemp >= 35, 4,
+			        2
+			    )
+		formatString: 0
+		displayFolder: 2. Heatwave
+		lineageTag: 34215301-a704-5501-a07f-2607ac0ecf0a
+
+	/// Number of stations (cities).
+	measure 'Cities Monitored' = DISTINCTCOUNT ( 'WeatherData'[City] )
+		formatString: 0
+		displayFolder: 3. Early Warning
+		lineageTag: e636f28d-aec4-5b33-98fb-b04e83cb5f51
+
+	/// Last date with a valid reading in the selection.
+	measure 'Latest Reading Date' = CALCULATE ( MAX ( 'WeatherData'[Date] ), NOT ISBLANK ( 'WeatherData'[MaxTemperature] ) )
+		formatString: dd mmm yyyy
+		displayFolder: 3. Early Warning
+		lineageTag: 39249ab4-7f2d-5d72-994e-0ddf59ee0263
+
+	/// Max temperature on the latest reading date.
+	measure 'Latest Max Temp' =
+			VAR LastReadDate = [Latest Reading Date]
+			RETURN
+			    CALCULATE ( [Avg Max Temp], 'WeatherData'[Date] = LastReadDate )
+		formatString: 0.0" °C"
+		displayFolder: 3. Early Warning
+		lineageTag: 92fe0fa9-0029-5234-b85e-2dcf5bdc60f8
+
+	/// Heatwave days in the 30 days up to the latest reading.
+	measure 'Active Alerts (Last 30 Days)' =
+			VAR LastReadDate = [Latest Reading Date]
+			RETURN
+			    CALCULATE ( [Heatwave Days], 'WeatherData'[Date] > LastReadDate - 30, 'WeatherData'[Date] <= LastReadDate ) + 0
+		formatString: #,##0
+		displayFolder: 3. Early Warning
+		lineageTag: affec2b7-8f65-5cd7-a21e-ae580ac39561
+
+	/// Severe heatwave days in the 30 days up to the latest reading.
+	measure 'Severe Alerts (Last 30 Days)' =
+			VAR LastReadDate = [Latest Reading Date]
+			RETURN
+			    CALCULATE ( [Severe Heatwave Days], 'WeatherData'[Date] > LastReadDate - 30, 'WeatherData'[Date] <= LastReadDate ) + 0
+		formatString: #,##0
+		displayFolder: 3. Early Warning
+		lineageTag: 1188ec19-e3f1-5e17-9b74-48c41cc7b9ff
+
+	/// Days above the heat threshold that did not qualify as heatwave.
+	measure 'Hot Days (Last 30 Days)' =
+			VAR LastReadDate = [Latest Reading Date]
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( 'WeatherData' ),
+			        'WeatherData'[Alert Level] = "Yellow",
+			        'WeatherData'[Date] > LastReadDate - 30, 'WeatherData'[Date] <= LastReadDate
+			    ) + 0
+		formatString: #,##0
+		displayFolder: 3. Early Warning
+		lineageTag: 7d2ad4bd-23dc-5d8c-99a7-7108598ec703
+
+	/// Average max temperature over the 30 days up to the latest reading.
+	measure 'Heat Index (Last 30 Days)' =
+			VAR LastReadDate = [Latest Reading Date]
+			RETURN
+			    CALCULATE ( [Avg Max Temp], 'WeatherData'[Date] > LastReadDate - 30, 'WeatherData'[Date] <= LastReadDate )
+		formatString: 0.0" °C"
+		displayFolder: 3. Early Warning
+		lineageTag: a6e3659f-d633-5220-94ad-80b962f37576
+
+	/// IMD-style colour alert for the latest 30 days.
+	measure 'Current Alert' =
+			SWITCH (
+			    TRUE (),
+			    ISBLANK ( [Heat Index (Last 30 Days)] ), "No Data",
+			    [Severe Alerts (Last 30 Days)] >= 1, "Red",
+			    [Active Alerts (Last 30 Days)] >= 1, "Orange",
+			    [Hot Days (Last 30 Days)] >= 1, "Yellow",
+			    "Green"
+			)
+		displayFolder: 3. Early Warning
+		lineageTag: 1f7ac474-f02f-5163-99c1-f69f503ad010
+
+	/// Hex colour used for conditional formatting of the alert.
+	measure 'Alert Color' =
+			SWITCH (
+			    [Current Alert],
+			    "Red", "#D03B3B",
+			    "Orange", "#EC835A",
+			    "Yellow", "#FAB219",
+			    "Green", "#0CA30C",
+			    "#BDBDBD"
+			)
+		displayFolder: 3. Early Warning
+		lineageTag: 508124f0-d3bb-5497-aa35-4d3293f24f54
+
+	/// Auto-generated stakeholder advisory text.
+	measure Advisory =
+			VAR CityName = SELECTEDVALUE ( 'City'[City], "Selected cities" )
+			VAR Alerts = [Active Alerts (Last 30 Days)]
+			VAR Severe = [Severe Alerts (Last 30 Days)]
+			VAR HeatIdx = [Heat Index (Last 30 Days)]
+			VAR AsOf = FORMAT ( [Latest Reading Date], "dd mmm yyyy" )
+			VAR TempTxt = FORMAT ( HeatIdx, "0.0" ) & " °C"
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( HeatIdx ), CityName & ": no recent readings available.",
+			        Severe >= 1,
+			            "RED ALERT, " & CityName & " (as of " & AsOf & "): " & Severe & " severe heatwave day(s) in the last 30 days, "
+			                & "30-day average max " & TempTxt & ". Suspend outdoor work between 12 and 4 pm, open cooling centres, "
+			                & "put hospitals on heatstroke readiness and issue public SMS warnings.",
+			        Alerts >= 1,
+			            "ORANGE ALERT, " & CityName & " (as of " & AsOf & "): " & Alerts & " heatwave day(s) in the last 30 days, "
+			                & "30-day average max " & TempTxt & ". Avoid peak-hour exposure, provide drinking water at public places "
+			                & "and check on elderly people and outdoor workers.",
+			        [Hot Days (Last 30 Days)] >= 1,
+			            "YELLOW WATCH, " & CityName & " (as of " & AsOf & "): temperatures above the heat threshold on "
+			                & [Hot Days (Last 30 Days)] & " day(s), 30-day average max " & TempTxt
+			                & ". Stay hydrated and follow IMD bulletins.",
+			        "GREEN, " & CityName & " (as of " & AsOf & "): no heat stress expected, 30-day average max " & TempTxt & "."
+			    )
+		displayFolder: 3. Early Warning
+		lineageTag: 9211ef0b-3c1b-5cdd-a41d-e55b3ac6c199
+
+	/// Total rainfall.
+	measure 'Total Rainfall' = SUM ( 'WeatherData'[Rainfall] )
+		formatString: #,##0" mm"
+		displayFolder: 4. Rainfall
+		lineageTag: 812eec76-b863-5f3d-8860-4b6d205dfc37
+
+	/// Average daily rainfall on days with a reading.
+	measure 'Avg Daily Rain' = AVERAGE ( 'WeatherData'[Rainfall] )
+		formatString: 0.00" mm"
+		displayFolder: 4. Rainfall
+		lineageTag: 3fa09d0b-3f6c-5dd7-be71-3f6b91c0a860
+
+	/// Days with at least 2.5 mm of rain (IMD rainy day).
+	measure 'Rainy Days' = CALCULATE ( COUNTROWS ( 'WeatherData' ), 'WeatherData'[Rainfall] >= 2.5 ) + 0
+		formatString: #,##0
+		displayFolder: 4. Rainfall
+		lineageTag: f67ca677-0e5e-59ee-bf6e-852c1c203595
+
+	/// Heatwave days if every day were warmer by the selected Temp Increase.
+	measure 'Simulated Heatwave Days' =
+			VAR Delta = [Temp Increase Value]
+			RETURN
+			    SUMX (
+			        'WeatherData',
+			        VAR T = 'WeatherData'[MaxTemperature] + Delta
+			        VAR Dep = 'WeatherData'[Departure] + Delta
+			        VAR Terrain = RELATED ( 'City'[Terrain] )
+			        VAR Base = SWITCH ( Terrain, "Hilly", 30, "Coastal", 37, 40 )
+			        RETURN
+			            IF (
+			                NOT ISBLANK ( 'WeatherData'[MaxTemperature] )
+			                    && NOT ISBLANK ( 'WeatherData'[Departure] )
+			                    && ( ( Terrain = "Plains" && T >= 45 ) || ( T >= Base && Dep >= 4.5 ) ),
+			                1,
+			                0
+			            )
+			    )
+		formatString: #,##0
+		displayFolder: 5. What-if
+		lineageTag: c755b640-7459-5572-86e0-1d3a3b437261
+
+	/// Additional heatwave days under the what-if scenario.
+	measure 'Extra Heatwave Days' = [Simulated Heatwave Days] - [Heatwave Days]
+		formatString: +#,##0;-#,##0;0
+		displayFolder: 5. What-if
+		lineageTag: 5b9ff399-0f84-5882-ac6b-5f1a8bf7b457
+
+	/// Gauge minimum.
+	measure 'Gauge Min' = 20
+		formatString: 0
+		displayFolder: 6. Helpers
+		lineageTag: 502a5935-72cd-59c0-ab27-fe8cde210e7b
+
+	/// Gauge maximum.
+	measure 'Gauge Max' = 50
+		formatString: 0
+		displayFolder: 6. Helpers
+		lineageTag: 6178b6b3-87dd-5f48-9711-d88d33b5a88c
+
+	/// IMD plains heatwave threshold.
+	measure 'Heatwave Threshold (Plains)' = 40
+		formatString: 0" °C"
+		displayFolder: 6. Helpers
+		lineageTag: fc91c07e-43c0-55b1-a360-11a7f4fb5247
+
+	column Date
+		dataType: dateTime
+		formatString: dd mmm yyyy
+		lineageTag: 8561a1e6-2671-5fc3-9175-7f85361d40b2
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column City
+		dataType: string
+		lineageTag: 09594859-d034-551f-99da-27438d619ec2
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = User
+
+	/// Daily maximum temperature (C), cleaned.
+	column MaxTemperature
+		dataType: double
+		formatString: 0.0
+		lineageTag: 49117cd6-638f-5058-a573-ab112109b075
+		summarizeBy: average
+		sourceColumn: MaxTemperature
+
+		annotation SummarizationSetBy = User
+
+	/// Daily minimum temperature (C), cleaned.
+	column MinTemperature
+		dataType: double
+		formatString: 0.0
+		lineageTag: 02c17f8f-4396-5da9-88ee-9ca2e46d1b7f
+		summarizeBy: average
+		sourceColumn: MinTemperature
+
+		annotation SummarizationSetBy = User
+
+	/// Daily rainfall (mm). Trace rain recorded as 0.
+	column Rainfall
+		dataType: double
+		formatString: 0.0
+		lineageTag: 5631c8c9-bfeb-598e-a0b8-96a60f4d7b48
+		summarizeBy: sum
+		sourceColumn: Rainfall
+
+		annotation SummarizationSetBy = User
+
+	column RainTrace
+		dataType: boolean
+		lineageTag: 1d92417c-a657-50c2-8582-114a69ffdbf4
+		summarizeBy: none
+		sourceColumn: RainTrace
+
+		annotation SummarizationSetBy = User
+
+	/// Original, Imputed (gap of 3 days or less), Missing or Outlier Removed.
+	column DataQuality
+		dataType: string
+		lineageTag: a3e8970f-4dde-5301-a3b2-2a53712e898f
+		summarizeBy: none
+		sourceColumn: DataQuality
+
+		annotation SummarizationSetBy = User
+
+	/// 1991-2020 normal Tmax for this city and calendar day.
+	column NormalMaxTemp
+		dataType: double
+		formatString: 0.0
+		lineageTag: 0b0da86c-827a-5da5-98ff-5953cc2059af
+		summarizeBy: average
+		sourceColumn: NormalMaxTemp
+
+		annotation SummarizationSetBy = User
+
+	/// Departure of Tmax from the 1991-2020 normal for that city and calendar day.
+	column Departure =
+			IF (
+			    NOT ISBLANK ( 'WeatherData'[MaxTemperature] ) && NOT ISBLANK ( 'WeatherData'[NormalMaxTemp] ),
+			    'WeatherData'[MaxTemperature] - 'WeatherData'[NormalMaxTemp]
+			)
+		formatString: 0.0
+		lineageTag: 75c35191-cb8b-5348-bb03-e8e5fdae2d9a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// IMD heatwave criteria (threshold by terrain + departure from normal, or absolute 45/47 C in plains).
+	column 'Heatwave Status' =
+			VAR T = 'WeatherData'[MaxTemperature]
+			VAR Dep = 'WeatherData'[Departure]
+			VAR Terrain = RELATED ( 'City'[Terrain] )
+			VAR Base = SWITCH ( Terrain, "Hilly", 30, "Coastal", 37, 40 )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( T ), "No Data",
+			        Terrain = "Plains" && T >= 47, "Severe Heatwave",
+			        Terrain = "Plains" && T >= 45, "Heatwave",
+			        T >= Base && Dep > 6.4, "Severe Heatwave",
+			        T >= Base && Dep >= 4.5, "Heatwave",
+			        "Normal"
+			    )
+		lineageTag: baa6891c-349c-52d5-9d50-aef0b1030a88
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// IMD colour code: Green normal, Yellow hot day, Orange heatwave, Red severe heatwave.
+	column 'Alert Level' =
+			VAR Base = SWITCH ( RELATED ( 'City'[Terrain] ), "Hilly", 30, "Coastal", 37, 40 )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        'WeatherData'[Heatwave Status] = "No Data", "No Data",
+			        'WeatherData'[Heatwave Status] = "Severe Heatwave", "Red",
+			        'WeatherData'[Heatwave Status] = "Heatwave", "Orange",
+			        'WeatherData'[MaxTemperature] >= Base, "Yellow",
+			        "Green"
+			    )
+		lineageTag: e2797574-3ca5-51aa-8c05-bcaacef4c78e
+		summarizeBy: none
+		sortByColumn: 'Alert Order'
+
+		annotation SummarizationSetBy = User
+
+	column 'Alert Order' =
+			VAR Base = SWITCH ( RELATED ( 'City'[Terrain] ), "Hilly", 30, "Coastal", 37, 40 )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        'WeatherData'[Heatwave Status] = "No Data", 5,
+			        'WeatherData'[Heatwave Status] = "Severe Heatwave", 4,
+			        'WeatherData'[Heatwave Status] = "Heatwave", 3,
+			        'WeatherData'[MaxTemperature] >= Base, 2,
+			        1
+			    )
+		isHidden
+		formatString: 0
+		lineageTag: 9bbcf3fa-6a61-5b3d-aa42-a499a71a5181
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	/// Day max minus night min.
+	column 'Diurnal Range' =
+			IF (
+			    NOT ISBLANK ( 'WeatherData'[MaxTemperature] ) && NOT ISBLANK ( 'WeatherData'[MinTemperature] ),
+			    'WeatherData'[MaxTemperature] - 'WeatherData'[MinTemperature]
+			)
+		formatString: 0.0
+		lineageTag: 2b2d543c-f7c1-5e62-bd53-69009f4c128b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+	partition WeatherData = m
+		mode: import
+		source =
+				let
+				    // Import every <city>-data.csv in the Data folder and clean each one with fnCleanCity
+				    Files = Folder.Files(DataFolder),
+				    CsvFiles = Table.SelectRows(Files, each Text.Lower([Extension]) = ".csv" and Text.EndsWith(Text.Lower([Name]), "-data.csv")),
+				    WithCity = Table.AddColumn(CsvFiles, "CityName", each Text.Proper(Text.BeforeDelimiter([Name], "-")), type text),
+				    Cleaned = Table.AddColumn(WithCity, "Clean", each fnCleanCity([Content], [CityName])),
+				    Combined = Table.Buffer(Table.Combine(Cleaned[Clean])),
+				    // Daily climatological normal of Tmax per city (1991-2020 WMO baseline), used for the IMD departure rule
+				    WithKey = Table.AddColumn(Combined, "MonthDay", each Date.Month([Date]) * 100 + Date.Day([Date]), Int64.Type),
+				    Baseline = Table.SelectRows(WithKey,
+				        each Date.Year([Date]) >= 1991 and Date.Year([Date]) <= 2020 and [DataQuality] = "Original"),
+				    Normals = Table.Group(Baseline, {"City", "MonthDay"},
+				        {{"NormalMaxTemp", each Number.Round(List.Average([MaxTemperature]), 2), type nullable number}}),
+				    Joined = Table.NestedJoin(WithKey, {"City", "MonthDay"}, Normals, {"City", "MonthDay"}, "N", JoinKind.LeftOuter),
+				    Expanded = Table.ExpandTableColumn(Joined, "N", {"NormalMaxTemp"}),
+				    Result = Table.RemoveColumns(Expanded, {"MonthDay"}),
+				    Typed = Table.TransformColumnTypes(Result, {
+				        {"Date", type date}, {"City", type text}, {"MaxTemperature", type number},
+				        {"MinTemperature", type number}, {"Rainfall", type number}, {"RainTrace", type logical},
+				        {"DataQuality", type text}, {"NormalMaxTemp", type number}})
+				in
+				    Typed
+

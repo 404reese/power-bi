@@ -1,0 +1,7 @@
+role 'North Region Analyst'
+	modelPermission: read
+
+	tablePermission City = [Region] = "North Plains"
+
+	annotation PBI_Id = 4774d61aa451579f8c8f228b2a28433d
+

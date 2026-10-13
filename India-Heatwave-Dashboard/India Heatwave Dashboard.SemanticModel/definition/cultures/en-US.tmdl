@@ -1,0 +1,116 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "weatherdata.avg_max_temp": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "WeatherData",
+			          "ConceptualProperty": "Avg Max Temp"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Avg Max": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "weatherdata.highest_max_temp": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "WeatherData",
+			          "ConceptualProperty": "Highest Max Temp"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Record Max": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "weatherdata.heatwave_days": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "WeatherData",
+			          "ConceptualProperty": "Heatwave Days"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "HW Days": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "weatherdata.maxtemperature": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "WeatherData",
+			          "ConceptualProperty": "MaxTemperature"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Max Temp (°C)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "weatherdata.departure": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "WeatherData",
+			          "ConceptualProperty": "Departure"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Departure (°C)": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

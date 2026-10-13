@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.0.0/schema.json",
+  "pageOrder": [
+    "national_overview",
+    "regional_analysis",
+    "trends_seasons",
+    "early_warning",
+    "advanced_analytics",
+    "city_details",
+    "city_tooltip"
+  ],
+  "activePageName": "national_overview"
+}

@@ -1,0 +1,8 @@
+relationship ab570484-8656-55a4-9d06-f5eb4c9ea597
+	fromColumn: WeatherData.City
+	toColumn: City.City
+
+relationship e9708cd9-c934-5c74-8a42-f269529a0f53
+	fromColumn: WeatherData.Date
+	toColumn: Date.Date
+

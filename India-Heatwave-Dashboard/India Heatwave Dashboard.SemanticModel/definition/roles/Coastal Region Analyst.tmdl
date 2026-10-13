@@ -1,0 +1,7 @@
+role 'Coastal Region Analyst'
+	modelPermission: read
+
+	tablePermission City = [Terrain] = "Coastal"
+
+	annotation PBI_Id = f7cb1fea193e5c4aa240af7476f57569
+

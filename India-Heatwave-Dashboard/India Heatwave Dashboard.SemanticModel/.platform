@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "India Heatwave Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "5a30e666-b0d1-5f38-b17c-8ce31bbc219c"
+  }
+}
