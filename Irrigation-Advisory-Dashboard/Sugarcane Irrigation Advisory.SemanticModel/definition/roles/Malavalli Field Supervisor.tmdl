@@ -1,0 +1,7 @@
+role 'Malavalli Field Supervisor'
+	modelPermission: read
+
+	tablePermission Farms = [Taluk] = "Malavalli"
+
+	annotation PBI_Id = 84871dbab4e4547e98152f069831ada2
+

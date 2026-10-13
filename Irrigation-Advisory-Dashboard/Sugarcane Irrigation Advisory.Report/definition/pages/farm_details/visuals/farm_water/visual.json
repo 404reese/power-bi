@@ -1,0 +1,173 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "farm_water",
+  "position": {
+    "x": 16,
+    "y": 482,
+    "z": 10000,
+    "height": 222,
+    "width": 1248,
+    "tabOrder": 9
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Root Zone Deficit (mm)"
+                }
+              },
+              "queryRef": "Farms.Root Zone Deficit (mm)",
+              "nativeQueryRef": "Root Zone Deficit (mm)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Gross Irrigation (mm)"
+                }
+              },
+              "queryRef": "Farms.Gross Irrigation (mm)",
+              "nativeQueryRef": "Gross Irrigation (mm)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Irrigation Volume (m3)"
+                }
+              },
+              "queryRef": "Farms.Irrigation Volume (m3)",
+              "nativeQueryRef": "Irrigation Volume (m3)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Pump Hours"
+                }
+              },
+              "queryRef": "Farms.Pump Hours",
+              "nativeQueryRef": "Pump Hours"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Power Slots (7 h)"
+                }
+              },
+              "queryRef": "Farms.Power Slots (7 h)",
+              "nativeQueryRef": "Power Slots (7 h)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Energy (kWh)"
+                }
+              },
+              "queryRef": "Farms.Energy (kWh)",
+              "nativeQueryRef": "Energy (kWh)"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Yield Loss Risk if Delayed 3 Days"
+                }
+              },
+              "queryRef": "Farms.Yield Loss Risk if Delayed 3 Days",
+              "nativeQueryRef": "Yield Loss Risk if Delayed 3 Days"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Fertigation Advice"
+                }
+              },
+              "queryRef": "Farms.Fertigation Advice",
+              "nativeQueryRef": "Fertigation Advice"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Water balance and fertigation'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

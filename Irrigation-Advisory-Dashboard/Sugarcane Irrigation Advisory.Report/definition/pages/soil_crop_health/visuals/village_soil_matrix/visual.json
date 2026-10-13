@@ -1,0 +1,314 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "village_soil_matrix",
+  "position": {
+    "x": 16,
+    "y": 388,
+    "z": 5000,
+    "height": 316,
+    "width": 836,
+    "tabOrder": 4
+  },
+  "visual": {
+    "visualType": "pivotTable",
+    "query": {
+      "queryState": {
+        "Rows": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Taluk"
+                }
+              },
+              "queryRef": "Farms.Taluk",
+              "nativeQueryRef": "Taluk",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Village"
+                }
+              },
+              "queryRef": "Farms.Village",
+              "nativeQueryRef": "Village",
+              "active": false
+            }
+          ]
+        },
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farm Count"
+                }
+              },
+              "queryRef": "Farms.Farm Count",
+              "nativeQueryRef": "Farm Count"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Soil Moisture"
+                }
+              },
+              "queryRef": "Farms.Avg Soil Moisture",
+              "nativeQueryRef": "Avg Soil Moisture"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Depletion %"
+                }
+              },
+              "queryRef": "Farms.Avg Depletion %",
+              "nativeQueryRef": "Avg Depletion %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg NDVI"
+                }
+              },
+              "queryRef": "Farms.Avg NDVI",
+              "nativeQueryRef": "Avg NDVI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg LAI"
+                }
+              },
+              "queryRef": "Farms.Avg LAI",
+              "nativeQueryRef": "Avg LAI"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Soil pH"
+                }
+              },
+              "queryRef": "Farms.Avg Soil pH",
+              "nativeQueryRef": "Avg Soil pH"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Organic Carbon"
+                }
+              },
+              "queryRef": "Farms.Avg Organic Carbon",
+              "nativeQueryRef": "Avg Organic Carbon"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Water Stress Score"
+                }
+              },
+              "queryRef": "Farms.Avg Water Stress Score",
+              "nativeQueryRef": "Avg Water Stress Score"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "FillRule": {
+                      "Input": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Farms"
+                            }
+                          },
+                          "Property": "Avg Depletion %"
+                        }
+                      },
+                      "FillRule": {
+                        "linearGradient2": {
+                          "min": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#FFFFFF'"
+                              }
+                            }
+                          },
+                          "max": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#F4A582'"
+                              }
+                            }
+                          },
+                          "nullColoringStrategy": {
+                            "strategy": {
+                              "Literal": {
+                                "Value": "'asZero'"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "Farms.Avg Depletion %"
+          }
+        },
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "FillRule": {
+                      "Input": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Entity": "Farms"
+                            }
+                          },
+                          "Property": "Avg Water Stress Score"
+                        }
+                      },
+                      "FillRule": {
+                        "linearGradient2": {
+                          "min": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#FFFFFF'"
+                              }
+                            }
+                          },
+                          "max": {
+                            "color": {
+                              "Literal": {
+                                "Value": "'#F4A582'"
+                              }
+                            }
+                          },
+                          "nullColoringStrategy": {
+                            "strategy": {
+                              "Literal": {
+                                "Value": "'asZero'"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "Farms.Avg Water Stress Score"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Soil and crop indicators by taluk and village (expand + to see villages)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

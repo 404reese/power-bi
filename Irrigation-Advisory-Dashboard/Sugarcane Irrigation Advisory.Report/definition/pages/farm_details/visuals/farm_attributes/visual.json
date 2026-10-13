@@ -1,0 +1,214 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.0.0/schema.json",
+  "name": "farm_attributes",
+  "position": {
+    "x": 16,
+    "y": 310,
+    "z": 9000,
+    "height": 160,
+    "width": 1248,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farm_ID"
+                }
+              },
+              "queryRef": "Farms.Farm_ID",
+              "nativeQueryRef": "Farm_ID"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Taluk"
+                }
+              },
+              "queryRef": "Farms.Taluk",
+              "nativeQueryRef": "Taluk"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Village"
+                }
+              },
+              "queryRef": "Farms.Village",
+              "nativeQueryRef": "Village"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farm_Area_ha"
+                }
+              },
+              "queryRef": "Farms.Farm_Area_ha",
+              "nativeQueryRef": "Farm_Area_ha"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "LAI"
+                }
+              },
+              "queryRef": "Farms.LAI",
+              "nativeQueryRef": "LAI"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Soil_pH"
+                }
+              },
+              "queryRef": "Farms.Soil_pH",
+              "nativeQueryRef": "Soil_pH"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Organic_Carbon"
+                }
+              },
+              "queryRef": "Farms.Organic_Carbon",
+              "nativeQueryRef": "Organic_Carbon"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Rainfall_mm"
+                }
+              },
+              "queryRef": "Farms.Rainfall_mm",
+              "nativeQueryRef": "Rainfall_mm"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Temperature_C"
+                }
+              },
+              "queryRef": "Farms.Temperature_C",
+              "nativeQueryRef": "Temperature_C"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Relative_Humidity"
+                }
+              },
+              "queryRef": "Farms.Relative_Humidity",
+              "nativeQueryRef": "Relative_Humidity"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Latitude"
+                }
+              },
+              "queryRef": "Farms.Latitude",
+              "nativeQueryRef": "Latitude"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Longitude"
+                }
+              },
+              "queryRef": "Farms.Longitude",
+              "nativeQueryRef": "Longitude"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Plot attributes'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

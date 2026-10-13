@@ -1,0 +1,144 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "village_bubble_map",
+  "position": {
+    "x": 16,
+    "y": 188,
+    "z": 8000,
+    "height": 516,
+    "width": 616,
+    "tabOrder": 7
+  },
+  "visual": {
+    "visualType": "map",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Village Location"
+                }
+              },
+              "queryRef": "Farms.Village Location",
+              "nativeQueryRef": "Village Location",
+              "active": true
+            }
+          ]
+        },
+        "Size": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farms to Irrigate Today"
+                }
+              },
+              "queryRef": "Farms.Farms to Irrigate Today",
+              "nativeQueryRef": "Farms to Irrigate Today"
+            }
+          ]
+        },
+        "Tooltips": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farm Count"
+                }
+              },
+              "queryRef": "Farms.Farm Count",
+              "nativeQueryRef": "Farm Count"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Avg Depletion %"
+                }
+              },
+              "queryRef": "Farms.Avg Depletion %",
+              "nativeQueryRef": "Avg Depletion %"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Water Required Today (m3)"
+                }
+              },
+              "queryRef": "Farms.Water Required Today (m3)",
+              "nativeQueryRef": "Water Required Today (m3)"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "dataPoint": [
+        {
+          "properties": {
+            "fill": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#2A78D6'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Villages: bubble size = plots to irrigate today'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

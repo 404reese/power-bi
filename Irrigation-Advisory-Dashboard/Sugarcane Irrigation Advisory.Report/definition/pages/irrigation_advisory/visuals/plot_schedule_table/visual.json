@@ -1,0 +1,230 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "plot_schedule_table",
+  "position": {
+    "x": 16,
+    "y": 318,
+    "z": 9000,
+    "height": 386,
+    "width": 836,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Farm_ID"
+                }
+              },
+              "queryRef": "Farms.Farm_ID",
+              "nativeQueryRef": "Farm_ID"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Village"
+                }
+              },
+              "queryRef": "Farms.Village",
+              "nativeQueryRef": "Village"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Soil_Moisture"
+                }
+              },
+              "queryRef": "Farms.Soil_Moisture",
+              "nativeQueryRef": "Soil_Moisture",
+              "displayName": "Soil moisture"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Depletion %"
+                }
+              },
+              "queryRef": "Farms.Depletion %",
+              "nativeQueryRef": "Depletion %",
+              "displayName": "Depletion"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Water Stress Score"
+                }
+              },
+              "queryRef": "Farms.Water Stress Score",
+              "nativeQueryRef": "Water Stress Score",
+              "displayName": "Stress"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Days to Next Irrigation"
+                }
+              },
+              "queryRef": "Farms.Days to Next Irrigation",
+              "nativeQueryRef": "Days to Next Irrigation",
+              "displayName": "Days to irrigate"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Pump Hours"
+                }
+              },
+              "queryRef": "Farms.Pump Hours",
+              "nativeQueryRef": "Pump Hours",
+              "displayName": "Pump h"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Power Slots (7 h)"
+                }
+              },
+              "queryRef": "Farms.Power Slots (7 h)",
+              "nativeQueryRef": "Power Slots (7 h)",
+              "displayName": "Power slots"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Advisory Category"
+                }
+              },
+              "queryRef": "Farms.Advisory Category",
+              "nativeQueryRef": "Advisory Category",
+              "displayName": "Advisory"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "Farms"
+                  }
+                },
+                "Property": "Water Stress Score"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "values": [
+        {
+          "properties": {
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Farms"
+                        }
+                      },
+                      "Property": "Advisory Color"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "Farms.Advisory Category"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Plot-wise irrigation schedule (most urgent first)'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

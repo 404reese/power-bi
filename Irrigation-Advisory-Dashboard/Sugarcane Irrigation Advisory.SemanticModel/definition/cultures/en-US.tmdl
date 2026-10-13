@@ -1,0 +1,158 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "farms.soil_moisture": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Soil_Moisture"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Soil moisture": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.depletion_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Depletion %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Depletion": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.water_stress_score": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Water Stress Score"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Stress": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.days_to_next_irrigation": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Days to Next Irrigation"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Days to irrigate": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.pump_hours": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Pump Hours"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Pump h": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.power_slots_7_h": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Power Slots (7 h)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Power slots": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "farms.advisory_category": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Farms",
+			          "ConceptualProperty": "Advisory Category"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Advisory": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

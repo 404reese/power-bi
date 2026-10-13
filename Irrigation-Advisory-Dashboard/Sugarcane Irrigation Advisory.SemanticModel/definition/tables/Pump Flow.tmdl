@@ -1,0 +1,27 @@
+table 'Pump Flow'
+	lineageTag: fe0040d2-c6e6-50ba-abb3-90836f397d21
+
+	/// Pump discharge.
+	measure 'Pump Flow Value' = SELECTEDVALUE ( 'Pump Flow'[Pump Flow], 30 )
+		formatString: 0" m³/h"
+		lineageTag: f123e4af-f969-567e-94c5-df306b3eb8d2
+
+	column 'Pump Flow'
+		formatString: 0" m³/h"
+		lineageTag: 67a1db43-e662-58c7-9d3a-bfbc31269a98
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Pump Flow' = calculated
+		mode: import
+		source = GENERATESERIES ( 30, 80, 5 )
+
+	annotation PBI_Id = cc657294b43656fe8e6236884f277430
+

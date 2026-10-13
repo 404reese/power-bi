@@ -1,0 +1,27 @@
+table 'Irrigation Efficiency'
+	lineageTag: 693af575-fc04-552f-9150-e6bf21308a23
+
+	/// Application efficiency (furrow 60%, drip 90%).
+	measure 'Irrigation Efficiency Value' = SELECTEDVALUE ( 'Irrigation Efficiency'[Irrigation Efficiency], 0.6 )
+		formatString: 0%
+		lineageTag: 2ff533a9-2452-512f-9f05-36ea59e8f821
+
+	column 'Irrigation Efficiency'
+		formatString: 0%
+		lineageTag: 9b633ad4-4ffa-5b05-b1da-28600729282e
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Irrigation Efficiency' = calculated
+		mode: import
+		source = GENERATESERIES ( 0.6, 0.95, 0.05 )
+
+	annotation PBI_Id = 4279d8b46623598dba66ec87152ce4db
+

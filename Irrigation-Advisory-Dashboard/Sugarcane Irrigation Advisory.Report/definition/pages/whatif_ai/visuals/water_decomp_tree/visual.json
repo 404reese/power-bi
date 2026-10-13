@@ -1,0 +1,163 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "water_decomp_tree",
+  "position": {
+    "x": 648,
+    "y": 188,
+    "z": 9000,
+    "height": 516,
+    "width": 616,
+    "tabOrder": 8
+  },
+  "visual": {
+    "visualType": "decompositionTreeVisual",
+    "query": {
+      "queryState": {
+        "Analyze": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Water Required Today (m3)"
+                }
+              },
+              "queryRef": "Farms.Water Required Today (m3)",
+              "nativeQueryRef": "Water Required Today (m3)"
+            }
+          ]
+        },
+        "ExplainBy": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Taluk"
+                }
+              },
+              "queryRef": "Farms.Taluk",
+              "nativeQueryRef": "Taluk"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Village"
+                }
+              },
+              "queryRef": "Farms.Village",
+              "nativeQueryRef": "Village"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Stress Level"
+                }
+              },
+              "queryRef": "Farms.Stress Level",
+              "nativeQueryRef": "Stress Level"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "NDVI Class"
+                }
+              },
+              "queryRef": "Farms.NDVI Class",
+              "nativeQueryRef": "NDVI Class"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "Rainfall Zone"
+                }
+              },
+              "queryRef": "Farms.Rainfall Zone",
+              "nativeQueryRef": "Rainfall Zone"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Farms"
+                    }
+                  },
+                  "Property": "pH Class"
+                }
+              },
+              "queryRef": "Farms.pH Class",
+              "nativeQueryRef": "pH Class"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "tree": [
+        {
+          "properties": {
+            "effectiveBarsPerLevel": {
+              "expr": {
+                "Literal": {
+                  "Value": "6L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Decomposition tree: where today''s irrigation water goes'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

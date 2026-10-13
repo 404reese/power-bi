@@ -1,0 +1,13 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/pagesMetadata/1.1.0/schema.json",
+  "pageOrder": [
+    "farm_overview",
+    "soil_crop_health",
+    "weather_water",
+    "irrigation_advisory",
+    "whatif_ai",
+    "farm_details",
+    "village_tooltip"
+  ],
+  "activePageName": "weather_water"
+}

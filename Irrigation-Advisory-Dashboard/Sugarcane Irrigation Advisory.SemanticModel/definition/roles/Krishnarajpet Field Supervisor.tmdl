@@ -1,0 +1,7 @@
+role 'Krishnarajpet Field Supervisor'
+	modelPermission: read
+
+	tablePermission Farms = [Taluk] = "Krishnarajpet"
+
+	annotation PBI_Id = dd642906ecf656748af81002e5356c25
+

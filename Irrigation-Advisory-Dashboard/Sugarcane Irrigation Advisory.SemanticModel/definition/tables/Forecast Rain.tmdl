@@ -1,0 +1,27 @@
+table 'Forecast Rain'
+	lineageTag: b95919be-a847-5f4b-98a8-5406d9e561d1
+
+	/// Rain expected in the next 3 days.
+	measure 'Forecast Rain Value' = SELECTEDVALUE ( 'Forecast Rain'[Forecast Rain], 0 )
+		formatString: 0" mm"
+		lineageTag: 81a8ebee-1440-5db5-bc5c-096879f04102
+
+	column 'Forecast Rain'
+		formatString: 0" mm"
+		lineageTag: 645e4742-d88f-52ba-8d14-9c9f7406c7b3
+		summarizeBy: none
+		sourceColumn: [Value]
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 0
+				}
+
+		annotation SummarizationSetBy = User
+
+	partition 'Forecast Rain' = calculated
+		mode: import
+		source = GENERATESERIES ( 0, 50, 5 )
+
+	annotation PBI_Id = 61df97205a8a50d383534e8aebd577ed
+

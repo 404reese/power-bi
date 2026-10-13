@@ -1,0 +1,6 @@
+expression DataFolder = "C:\Users\riddh\Documents\Irrigation-Advisory-Dashboard\Data\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: aaa0d931-a410-5e52-ba9a-5a5366ee26f1
+	queryGroup: Parameters
+
+	annotation PBI_ResultType = Text
+
